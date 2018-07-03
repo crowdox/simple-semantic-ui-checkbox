@@ -5,7 +5,7 @@ export default Ember.Component.extend({
   classNameBindings: ['checked:checked', 'readonly:read-only'],
   checked: false,
 
-  click(event) {
+  click() {
     if (this.get('disabled') || this.get('readonly')) {
       return;
     }
