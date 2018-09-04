@@ -1,7 +1,8 @@
 <input type="checkbox"
        disabled={{if disabled "disabled"}}
        class="hidden"
-       checked={{if checked "checked"}} />
+       checked={{if checked "checked"}}
+       indeterminate={{indeterminate}}/>
 {{#if hasBlock}}
   {{yield}}
 {{else}}

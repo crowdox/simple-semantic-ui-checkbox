@@ -4,6 +4,7 @@ export default Component.extend({
   classNames: ['ui', 'checkbox'],
   classNameBindings: ['checked:checked', 'readonly:read-only'],
   checked: false,
+  indeterminate: null,
 
   click() {
     if (this.get('disabled') || this.get('readonly')) {
