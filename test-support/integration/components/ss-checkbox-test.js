@@ -1,120 +1,122 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('ss-checkbox', 'Integration | Component | ss checkbox', {
-  integration: true
-});
+module('Integration | Component | ss checkbox', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  assert.expect(2);
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+  test('it renders', async function(assert) {
+    assert.expect(2);
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
 
-  this.render(hbs`{{ss-checkbox}}`);
+    await render(hbs`{{ss-checkbox}}`);
 
-  assert.equal(this.$().text().trim(), '');
+    assert.dom().hasText('');
 
-  // Template block usage:
-  this.render(hbs`
-    {{#ss-checkbox}}
-      template block text
-    {{/ss-checkbox}}
-  `);
+    // Template block usage:
+    await render(hbs`
+      {{#ss-checkbox}}
+        template block text
+      {{/ss-checkbox}}
+    `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
-});
-
-test('it renders and changes', function(assert) {
-  assert.expect(2);
-
-  let count = 0;
-  this.set('changed', () => {
-    count++;
+    assert.dom().hasText('template block text');
   });
 
-  this.set('checked', false);
-  this.render(hbs`
-    {{#ss-checkbox checked=checked onChange=(action changed)}}
-      <label>Make my profile visible</label>
-    {{/ss-checkbox}}
-  `);
+  test('it renders and changes', async function(assert) {
+    assert.expect(2);
 
-  assert.equal(this.$('.ui.checkbox').length, 1);
-  assert.equal(count, 0, 'onChange should not have been called');
-});
+    let count = 0;
+    this.set('changed', () => {
+      count++;
+    });
 
-test('checking will update the bound property', function(assert) {
-  assert.expect(3);
+    this.set('checked', false);
+    await render(hbs`
+      {{#ss-checkbox checked=checked onChange=(action changed)}}
+        <label>Make my profile visible</label>
+      {{/ss-checkbox}}
+    `);
 
-  let count = 0;
-  this.set('changed', (value) => {
-    this.set('checked', value);
-    count++;
+    assert.dom('.ui.checkbox').exists();
+    assert.equal(count, 0, 'onChange should not have been called');
   });
 
-  this.set('checked', false);
-  this.render(hbs`
-    {{#ss-checkbox checked=checked onChange=(action changed)}}
-      <label>Make my profile visible</label>
-    {{/ss-checkbox}}
-  `);
+  test('checking will update the bound property', async function(assert) {
+    assert.expect(3);
 
-  assert.equal(this.$('.ui.checkbox').length, 1);
-  this.$('.ui.checkbox').click();
-  assert.equal(true, this.get('checked'));
-  assert.equal(count, 1, 'onChange should have only been called once');
-});
+    let count = 0;
+    this.set('changed', (value) => {
+      this.set('checked', value);
+      count++;
+    });
 
-test('setting disabled ignores click', function(assert) {
-  assert.expect(4);
+    this.set('checked', false);
+    await render(hbs`
+      {{#ss-checkbox checked=checked onChange=(action changed)}}
+        <label>Make my profile visible</label>
+      {{/ss-checkbox}}
+    `);
 
-  let count = 0;
-  this.set('changed', (value) => {
-    this.set('checked', value);
-    count++;
+    assert.dom('.ui.checkbox').exists();
+    await click('.ui.checkbox');
+    assert.equal(true, this.get('checked'));
+    assert.equal(count, 1, 'onChange should have only been called once');
   });
 
-  this.set('checked', false);
-  this.set('disabled', true);
-  this.render(hbs`
-    {{#ss-checkbox checked=checked disabled=disabled onChange=(action changed)}}
-      <label>Make my profile visible</label>
-    {{/ss-checkbox}}
-  `);
+  test('setting disabled ignores click', async function(assert) {
+    assert.expect(4);
 
-  assert.equal(this.$('.ui.checkbox').length, 1);
-  this.$('.ui.checkbox').click();
-  assert.equal(false, this.get('checked'));
+    let count = 0;
+    this.set('changed', (value) => {
+      this.set('checked', value);
+      count++;
+    });
 
-  this.set('disabled', false);
-  this.$('.ui.checkbox').click();
-  assert.equal(true, this.get('checked'));
-  assert.equal(count, 1, 'onChange should have only been called once');
-});
+    this.set('checked', false);
+    this.set('disabled', true);
+    await render(hbs`
+      {{#ss-checkbox checked=checked disabled=disabled onChange=(action changed)}}
+        <label>Make my profile visible</label>
+      {{/ss-checkbox}}
+    `);
 
-test('setting readonly ignores click', function(assert) {
-  assert.expect(4);
+    assert.dom('.ui.checkbox').exists();
+    await click('.ui.checkbox');
+    assert.equal(false, this.get('checked'));
 
-  let count = 0;
-  this.set('changed', (value) => {
-    this.set('checked', value);
-    count++;
+    this.set('disabled', false);
+    await click('.ui.checkbox');
+    assert.equal(true, this.get('checked'));
+    assert.equal(count, 1, 'onChange should have only been called once');
   });
 
-  this.set('checked', false);
-  this.set('readonly', true);
-  this.render(hbs`
-    {{#ss-checkbox checked=checked readonly=readonly onChange=(action changed)}}
-      <label>Make my profile visible</label>
-    {{/ss-checkbox}}
-  `);
+  test('setting readonly ignores click', async function(assert) {
+    assert.expect(4);
 
-  assert.equal(this.$('.ui.checkbox').length, 1);
-  this.$('.ui.checkbox').click();
-  assert.equal(false, this.get('checked'));
+    let count = 0;
+    this.set('changed', (value) => {
+      this.set('checked', value);
+      count++;
+    });
 
-  this.set('readonly', false);
-  this.$('.ui.checkbox').click();
-  assert.equal(true, this.get('checked'));
-  assert.equal(count, 1, 'onChange should have only been called once');
+    this.set('checked', false);
+    this.set('readonly', true);
+    await render(hbs`
+      {{#ss-checkbox checked=checked readonly=readonly onChange=(action changed)}}
+        <label>Make my profile visible</label>
+      {{/ss-checkbox}}
+    `);
+
+    assert.dom('.ui.checkbox').exists();
+    await click('.ui.checkbox');
+    assert.equal(false, this.get('checked'));
+
+    this.set('readonly', false);
+    await click('.ui.checkbox');
+    assert.equal(true, this.get('checked'));
+    assert.equal(count, 1, 'onChange should have only been called once');
+  });
 });
